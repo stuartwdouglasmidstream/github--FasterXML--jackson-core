@@ -213,33 +213,20 @@ com.fasterxml.jackson.core.*;version=${project.version}
         </executions>
       </plugin>
       <plugin>
-        <groupId>de.jjohannes</groupId>
-        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
 	<!-- 27-Apr-2023, tatu: [core#999]: Need to exclude shaded FDP
 	   dependency from GMM
 	  -->
 	<configuration>
-          <removedDependencies>
-            <dependency>
-              <groupId>ch.randelshofer</groupId>
-              <artifactId>fastdoubleparser</artifactId>
-            </dependency>
-          </removedDependencies>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
           <archive>
             <manifestEntries>
               <Multi-Release>true</Multi-Release>
             </manifestEntries>
           </archive>
+          
         </configuration>
       </plugin>
-
-      <!-- 23-Mar-2023, tatu: [core#965] Need to put back Gradle module metadata marker -->
       <plugin>
         <groupId>io.github.floverfelt</groupId>
         <artifactId>find-and-replace-maven-plugin</artifactId>
@@ -254,25 +241,21 @@ com.fasterxml.jackson.core.*;version=${project.version}
             <configuration>
               <replacementType>file-contents</replacementType>
               <baseDir>${basedir}</baseDir>
-              <findRegex><![CDATA[<modelVersion>4.0.0</modelVersion>]]></findRegex>
+              <findRegex>&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</findRegex>
               <fileMask>dependency-reduced-pom.xml</fileMask>
-              <replaceValue><![CDATA[  <!-- This module was also published with a richer model, Gradle metadata,  -->
-  <!-- which should be used instead. Do not delete the following line which  -->
-  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
-  <!-- that they should prefer consuming it instead. -->
-  <!-- do_not_remove: published-with-gradle-metadata -->
-  <modelVersion>4.0.0</modelVersion>]]></replaceValue>
+              <replaceValue>&lt;!-- This module was also published with a richer model, Gradle metadata,  --&gt;
+  &lt;!-- which should be used instead. Do not delete the following line which  --&gt;
+  &lt;!-- is to indicate to Gradle or any Gradle module metadata file consumer  --&gt;
+  &lt;!-- that they should prefer consuming it instead. --&gt;
+  &lt;!-- do_not_remove: published-with-gradle-metadata --&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</replaceValue>
               <recursive>false</recursive>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
-      <!-- 16-Nov-2022, tatu: [core#838] add verification of compatibility
-           wrt Android SDK versions using AnimalSniffer with "gummy bears" signatures.
-           To be run from CI, but manually with:
-              mvn clean package animal-sniffer:check
-        -->
+      <!-- 23-Mar-2023, tatu: [core#965] Need to put back Gradle module metadata marker -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -285,6 +268,13 @@ com.fasterxml.jackson.core.*;version=${project.version}
           </signature>
         </configuration>
       </plugin>
+
+      <!-- 16-Nov-2022, tatu: [core#838] add verification of compatibility
+           wrt Android SDK versions using AnimalSniffer with "gummy bears" signatures.
+           To be run from CI, but manually with:
+              mvn clean package animal-sniffer:check
+        -->
+      
 
     </plugins>
   </build>
